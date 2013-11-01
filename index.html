@@ -7,8 +7,14 @@
 	<script src="jquery-1.9.1.min.js"></script>
 </head>
 <body>
+<!-- Sound Test-->
 
-	
+<p align="left"><b>Click</b> on the following links to hear a sound effect:</p>
+<p align="left">
+<a href="#current" onclick="clicksound.playclip()">Link 1</a>
+<a href="#current" onclick="clicksound.playclip()">Link 2</a>
+<a href="#current" onclick="clicksound.playclip()">Link 3</a></p>
+<!-- Sound Test-->
 
 <div id="over"></div>	
     <!-- Footer -->
@@ -98,8 +104,10 @@ function OpenCard() {
 
 	if ($("#" + id + " img").is(":hidden")) {
 		$(Source + " div").unbind("click", OpenCard);
+		
 	
 		$("#" + id + " img").slideDown('fast');
+
 
 		if (ImgOpened == "") {
 			BoxOpened = id;
@@ -128,10 +136,10 @@ function OpenCard() {
 			}, 400);
 		}
 		Counter++;
-		$("#counter").html("" + Counter);
+		$("#counter").html("" + Counter).prepend(clicksound.playclip);
 
 		if (ImgFound == ImgSource.length) {
-			$("#counter").prepend('<span id="success">Found in </span>');
+			$("#counter").prepend('<span id="success">Found in </span>').append(oversound.playclip);
 			$("#over").prepend('<span id="over-text"><p>Game Over!</p></span>');
 		}
 	}
@@ -159,6 +167,48 @@ window.location="https://play.google.com/store/apps/details?id=io.codetic.visual
 
 </script>
 <!-- Rate the App -->
+
+<!-- Sound on Click -->
+
+<script>
+
+var html5_audiotypes={ 
+	"mp3": "audio/mpeg",
+	"mp4": "audio/mp4",
+	"ogg": "audio/ogg",
+	"wav": "audio/wav"
+}
+
+function createsoundbite(sound){
+	var html5audio=document.createElement('audio')
+	if (html5audio.canPlayType){ //check support for HTML5 audio
+		for (var i=0; i<arguments.length; i++){
+			var sourceel=document.createElement('source')
+			sourceel.setAttribute('src', arguments[i])
+			if (arguments[i].match(/\.(\w+)$/i))
+				sourceel.setAttribute('type', html5_audiotypes[RegExp.$1])
+			html5audio.appendChild(sourceel)
+		}
+		html5audio.load()
+		html5audio.playclip=function(){
+			html5audio.pause()
+			html5audio.currentTime=0
+			html5audio.play()
+		}
+		return html5audio
+	}
+	else{
+		return {playclip:function(){throw new Error("")}}
+	}
+}
+
+//Initialize two sound clips with 1 fallback file each:
+
+var oversound=createsoundbite("soundover.ogg", "soundover.mp3")
+var clicksound=createsoundbite("click.ogg", "click.mp3")
+
+</script>
+<!-- Sound on Click -->
 
 </body>
 </html>
